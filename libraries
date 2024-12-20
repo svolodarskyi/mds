@@ -1,0 +1,2 @@
+in Dockerfile: apt-get update && apt-get install -y postgresql-client-15 
+pip install dbt-postgres

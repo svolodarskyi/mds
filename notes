@@ -1,0 +1,3 @@
+init.sql must be automatically executed when docker started....?
+
+when the docker containers are running, how to check what's goign on inside, how to check logs and netwowking params atc.
