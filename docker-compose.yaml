@@ -1,16 +1,16 @@
 services:
-  source_postgres:
-    image: postgres:15
-    ports:
-      - '5433:5432'
-    networks:
-      - elt_network
-    environment:
-      POSTGRES_DB: source_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: secret
-    volumes:
-      - ./source_db_init/init.sql:/docker-entrypoint-initdb.d/init.sql
+  # source_postgres:
+  #   image: postgres:15
+  #   ports:
+  #     - '5433:5432'
+  #   networks:
+  #     - elt_network
+  #   environment:
+  #     POSTGRES_DB: source_db
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: secret
+  #   volumes:
+  #     - ./source_db_init/init.sql:/docker-entrypoint-initdb.d/init.sql
 
     #EXAMPLE: CHECKING THE HEALTH OF POSTGRESS RIGHT AWAY. 
     # healthcheck:
@@ -30,22 +30,24 @@ services:
       POSTGRES_DB: destination_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secret
+    volumes:
+      - ./source_db_init/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  elt_script:
-    build:
-      context: ./elt # Directory containing the Dockerfile and elt_script.py
-      dockerfile: Dockerfile # Name of the Dockerfile, if it's something other than "Dockerfile", specify here
-    command: ['python', 'elt_script.py']
-    networks:
-      - elt_network
-    depends_on:
-      - source_postgres
-      - destination_postgres
+  # elt_script:
+  #   build:
+  #     context: ./elt # Directory containing the Dockerfile and elt_script.py
+  #     dockerfile: Dockerfile # Name of the Dockerfile, if it's something other than "Dockerfile", specify here
+  #   command: ['python', 'elt_script.py']
+  #   networks:
+  #     - elt_network
+  #   depends_on:
+  #     - source_postgres
+  #     - destination_postgres
 
-    #EXAMPLE: dependancy on healthy state of container with db - see above source_postgres - commented code
-    # depends_on:
-    #   postgres:
-    #     condition: service_healthy
+  #   #EXAMPLE: dependancy on healthy state of container with db - see above source_postgres - commented code
+  #   # depends_on:
+  #   #   postgres:
+  #   #     condition: service_healthy
 
   dbt:
     image: ghcr.io/dbt-labs/dbt-postgres:1.4.7
@@ -67,7 +69,7 @@ services:
       #look for --profiles-dir location
       - ./dbt/profiles:/root
     depends_on:
-      - elt_script
+      - destination_postgres
     environment:
       DBT_PROFILE: default
       DBT_TARGET: dev

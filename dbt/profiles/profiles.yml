@@ -5,8 +5,8 @@ postgres_transformations:
       type: postgres
       #in order for dbt to recongnize the docker container which we are trying to access here, which is goign to be destination db?
       #it will read the actual IP address of the docker container of the destination db
-      host: host.docker.internal
-      port: 5434
+      host: destination_postgres
+      port: 5432
       user: postgres
       pass: secret
       dbname: destination_db
