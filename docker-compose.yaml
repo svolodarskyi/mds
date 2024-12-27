@@ -48,9 +48,9 @@ services:
     #     condition: service_healthy
 
   dbt:
-    image: ghcr.io/dbt-labs/dbt-postgres:1.47
+    image: ghcr.io/dbt-labs/dbt-postgres:1.4.7
     command:
-     /*dbt run is the command we use to run models on top of the destination*/
+     #dbt run is the command we use to run models on top of the destination
       [
         "run",
         "--profiles-dir",
@@ -59,15 +59,15 @@ services:
         "/dbt"
       ]  
     networks:
-      -elt_network
-    /*we need to map the docker container to look at where the project files are on the local machine*/
+      - elt_network
+    #we need to map the docker container to look at where the project files are on the local machine
     volumes:
-      /*look for --project-dir location*/
-      -./dbt/custom-postgres:/dbt
-      /*look for --profiles-dir location*/
-      -./dbt/profiles:/root
+      #look for --project-dir location
+      - ./dbt/postgres_transformations:/dbt
+      #look for --profiles-dir location
+      - ./dbt/profiles:/root
     depends_on:
-      -elt_script
+      - elt_script
     environment:
       DBT_PROFILE: default
       DBT_TARGET: dev

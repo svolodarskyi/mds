@@ -1,3 +1,7 @@
 init.sql must be automatically executed when docker started....?
 
 when the docker containers are running, how to check what's goign on inside, how to check logs and netwowking params atc.
+
+hosts in the dbt host in profiles.yml: how to connect to otehr docker container?
+
+data is not persisted on the project. if we need to how to?
