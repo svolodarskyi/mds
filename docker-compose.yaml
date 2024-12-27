@@ -42,15 +42,37 @@ services:
       - source_postgres
       - destination_postgres
 
-  dbt:
-    -image: ghcr.io/dbt-labs/dbt-postgres:1.47:<version_tag>
-  
-    
     #EXAMPLE: dependancy on healthy state of container with db - see above source_postgres - commented code
     # depends_on:
     #   postgres:
     #     condition: service_healthy
 
+  dbt:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.47
+    command:
+     /*dbt run is the command we use to run models on top of the destination*/
+      [
+        "run",
+        "--profiles-dir",
+        "/root",
+        "--project-dir",
+        "/dbt"
+      ]  
+    networks:
+      -elt_network
+    /*we need to map the docker container to look at where the project files are on the local machine*/
+    volumes:
+      /*look for --project-dir location*/
+      -./dbt/custom-postgres:/dbt
+      /*look for --profiles-dir location*/
+      -./dbt/profiles:/root
+    depends_on:
+      -elt_script
+    environment:
+      DBT_PROFILE: default
+      DBT_TARGET: dev
+      
+  
 networks:
   elt_network:
     driver: bridge
