@@ -41,6 +41,10 @@ services:
     depends_on:
       - source_postgres
       - destination_postgres
+
+  dbt:
+    -image: ghcr.io/dbt-labs/dbt-postgres:1.47:<version_tag>
+  
     
     #EXAMPLE: dependancy on healthy state of container with db - see above source_postgres - commented code
     # depends_on:
